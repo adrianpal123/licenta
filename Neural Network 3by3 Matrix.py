@@ -24,7 +24,7 @@ if tf.test.gpu_device_name():
     print('Default GPU Device: {}'.format(tf.test.gpu_device_name()))
 else:
     print("Please install GPU version of TF")
-dataset = pd.read_csv('licenta_dataset3.csv')
+dataset = pd.read_csv('licenta_dataset3Test.csv')
 
 print("DATASET HEAD:")
 print(dataset.head())
@@ -95,8 +95,8 @@ print(Y[1])
 def NormalizeData(data):
   return (data - np.min(data)) / (np.max(data) - np.min(data))
 
-normalized_x = X #NormalizeData(X)
-normalized_y = Y #NormalizeData(Y)
+normalized_x = X#NormalizeData(X)
+normalized_y = Y#NormalizeData(Y)
 
 
 
@@ -106,22 +106,26 @@ print(normalized_y[1])
 model = Sequential()
 #model.add(Convolution2D(filters=256, kernel_size=1, padding='SAME', input_shape=(3,4), activation='sigmoid'))
 model.add(Flatten(input_shape=(3,4)))
-model.add(Dense(715, activation='relu', kernel_initializer='random_uniform', bias_initializer='zeros'))
+model.add(Dense(850, activation='relu', kernel_regularizer=l2(0.01), bias_regularizer=l2(0.01), kernel_initializer='LecunNormal', bias_initializer='zeros'))
+model.add(Dropout(0.1))
+model.add(Dense(650,activation='LeakyReLU',kernel_regularizer=l2(0.01), bias_regularizer=l2(0.01), kernel_initializer='RandomUniform'))
 model.add(Dropout(0.2))
-model.add(Dense(515,activation='relu',kernel_regularizer=l2(0.01), bias_regularizer=l2(0.01)))
-model.add(Dropout(0.2))
-model.add(Dense(215,kernel_regularizer=l2(0.01), bias_regularizer=l2(0.01),kernel_initializer = tf.keras.initializers.Identity(),bias_initializer='zeros', activation='relu'))
+model.add(Dense(500,activation='linear',kernel_regularizer=l2(0.02), bias_regularizer=l2(0.02), kernel_initializer='LecunNormal',bias_initializer='zeros'))
 model.add(Dropout(0.3))
-model.add(Dense(125, activation='relu'))
+model.add(Dense(300,kernel_regularizer=l2(0.01), bias_regularizer=l2(0.01), activation='linear', kernel_initializer='LecunNormal'))
 model.add(Dropout(0.2))
-model.add(Dense(75, activation='relu'))
+model.add(Dense(150, kernel_regularizer=l2(0.02), bias_regularizer=l2(0.02), activation='LeakyReLU'))
+model.add(Dropout(0.2))
+model.add(Dense(75,kernel_initializer='LecunNormal',bias_initializer='zeros', activation='relu'))
+model.add(Dropout(0.2))
+model.add(Dense(35,kernel_initializer='LecunNormal',bias_initializer='zeros', activation='relu'))
 model.add(Dropout(0.3))
 model.add(Dense(3, activation='relu'))
 
 sgd = tf.keras.optimizers.SGD(learning_rate=0.01, nesterov=True, decay=1e-6, momentum=0.9)
-model.compile(loss='cosine_similarity',optimizer=sgd,metrics=["accuracy"])
+model.compile(loss='cosine_similarity',optimizer=sgd,metrics=["accuracy","mse","mae"])
 
-history = model.fit(normalized_x,normalized_y , epochs=100, batch_size=320, verbose='auto', validation_split=0.2,shuffle=True)
+history = model.fit(normalized_x,normalized_y , epochs=100, batch_size=340, verbose='auto', validation_split=0.2,shuffle=True)
 
 
 print(model.summary())
@@ -150,3 +154,12 @@ plt.legend(['train', 'test'], loc='upper left')
 plt.tight_layout()
 
 plt.show()
+
+plt.plot(history.history['mse'])
+plt.plot(history.history['val_mse'])
+plt.title('Mean squared error')
+plt.ylabel('mse')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.show()
+
