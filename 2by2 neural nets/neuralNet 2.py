@@ -13,7 +13,7 @@ from sklearn.preprocessing import MinMaxScaler
 from tensorflow import keras
 
 
-DATASET = pd.read_csv('Datasets/CosineSimilarityDataset.csv')
+DATASET = pd.read_csv('Datasets/CosineSimilarity[0,1]Dataset.csv')
 
 
 def preConditions(dataset):
@@ -25,7 +25,8 @@ def preConditions(dataset):
         print('Default GPU Device: {}'.format(tf.test.gpu_device_name()))
     else:
         print("Please install GPU version of TF")
-    print("----- PRIMELE 5 VALORI DIN SETUL DE DATE ----- " + '\n' + dataset.head())
+    print("----- PRIMELE 5 VALORI DIN SETUL DE DATE ----- ")
+    print(dataset.head())
 
 
 def NormalizeDataSklearn(X,Y,revertBoolean = False):
@@ -136,11 +137,12 @@ if __name__ == '__main__':
     model.add(Dropout(0.2))
     model.add(Dense(2, activation='relu'))
 
-    sgd = tf.keras.optimizers.SGD(learning_rate=0.01, nesterov=True, decay=1e-7, momentum=0.9)
-    model.compile(loss='cosine_similarity', optimizer="Adam", metrics=["accuracy", "mse", "mae"])
+    sgd = tf.keras.optimizers.SGD(learning_rate=0.001, nesterov=True, decay=1e-8, momentum=0.9)
+    model.compile(loss='cosine_similarity', optimizer=sgd, metrics=["accuracy", "mse", "mae"])
 
-    history = model.fit(X_train, Y_train, epochs=50, batch_size=64, verbose='auto', validation_split=0.2, shuffle=True)
+    history = model.fit(X_train, Y_train, epochs=50, batch_size=128, verbose='auto', validation_split=0.2, shuffle=True)
 
+    # Accuratetea ar putea fi scrisa ca numarul de predictii corecte / numarul total de predictii.
     print(history.history.keys())
 
     score = model.evaluate(X_test, Y_test, verbose=0)
@@ -149,14 +151,14 @@ if __name__ == '__main__':
 
     model.save("savedNeuralNetwork")
 
-    # Se salveaza modelul neuronal
+    # Se salveaza modelul neuronal.
     reconstructed_model = keras.models.load_model("savedNeuralNetwork")
 
-    # Let's check:
+    # Se verifica modelul.
     np.testing.assert_allclose(model.predict(X_test), reconstructed_model.predict(X_test))
 
-    # The reconstructed model is already compiled and has retained the optimizer
-    # state, so training can resume:
+    # Modelul reconstruit este deja compilat si a retinut optimizatorul
+    # Antrenamentul se poată relua:
     reconstructed_model.fit(X_test, Y_test)
 
     print(model.summary())

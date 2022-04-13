@@ -12,8 +12,8 @@ def getSystem():
       :returns: coeficienti dependenti aleatori, coeficienti independenti aleatori
       """
     systemSize = 2
-    syst = np.round(np.random.uniform(-_MAX, _MAX, [systemSize, systemSize]), 8)
-    sol = np.round(np.random.uniform(-_MAX, _MAX, [systemSize, 1]), 8)
+    syst = np.round(np.random.uniform(0, _MAX, [systemSize, systemSize]), 8)
+    sol = np.round(np.random.uniform(0, _MAX, [systemSize, 1]), 8)
     return syst, sol
 
 
@@ -35,42 +35,24 @@ def generateEntries(x):
     :return: scrierea in fisiere a coeficientilor dependenti / coeficientilor independenti / necunoscutelor -> transformate
            in bytecode in format csv.
     """
-    maxim = 0
-    maximCoefD = 0
-    maximCoefI = 0
     counter = 0
     for i in range(x):
         syst, sol = getSystem()
         out = getOutput(syst, sol)
-        with open('Datasets/CosineSimilarityDataset.csv', 'a+', newline='', encoding='UTF8') as f:
+        with open('Datasets/CosineSimilarity[0,1]Dataset.csv', 'a+', newline='', encoding='UTF8') as f:
             writer = csv.writer(f)
             #writer.writerow(['system','solution','output'])
-            if np.max(out) < 1 and np.min(out) > 0 and np.max(syst) < _MAX and np.min(syst) > 0 and np.max(
+            if np.max(out) < _MAX and np.min(out) > 0 and np.max(syst) < _MAX and np.min(syst) > 0 and np.max(
                     sol) < _MAX and np.min(sol) > 0:
                 writer.writerow([str(syst.tobytes()), str(sol.tobytes()), str(out.tobytes())])
                 print("Coeficientii Dependenti: {} ".format(syst) + '\n' + "Coeficientii Independenti: {} ".format(
-                    sol) + '\n' + "Necunoscutele [X,Y,Z,W,A,R..ETC]: {} ".format(out) + '\n' + "Counter = " + str(
+                    sol) + '\n' + "Necunoscutele [X si Y]: {} ".format(out) + '\n' + "Counter = " + str(
                     counter))
-                print(syst)
-                print(sol)
-                print(out)
-                if np.max(out) > maxim:
-                    maxim = np.max(out)
-                if np.max(sol) > maximCoefI:
-                    maximCoefI = np.max(sol)
-                if np.max(syst) > maximCoefD:
-                    maximCoefD = np.max(syst)
-                print(len(out))
-            f.close()
+                counter += 1
+                print(str(syst) + '\n' + str(sol) + '\n' + str(out) + '\n' + "Counter = " + str(counter))
 
-        print("MAXIM Solutii: ")
-        print(maxim)
-        print("Maxim Coef Independenti: ")
-        print(maximCoefI)
-        print("Maxim Coef Dependenti: ")
-        print(maximCoefI)
-        print("Counter = " + str(counter))
+        f.close()
 
 
 if __name__ == '__main__':
-    generateEntries(10000000000)
+    generateEntries(100000000)
