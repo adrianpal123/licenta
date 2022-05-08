@@ -54,7 +54,7 @@ def neuralNetworkModel(dataset):
     neuralUtil.plot(history)
     neuralUtil.plottingModelPNG(model)
 
-    neuralUtil.saveAndTestNeuralNetworkModel(model,X_train,Y_test,X_test)
+    neuralUtil.saveAndTestNeuralNetworkModel(model,X_train,Y_train,X_test)
 
 
 
