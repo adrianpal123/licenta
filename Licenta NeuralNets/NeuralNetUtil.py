@@ -217,9 +217,9 @@ def predictionAndEvaluationOfTheModel(model,X_test,Y_test):
     print('Test loss:', score[0])
     print('Test accuracy:', score[1])
 
-    print("Predicting the model ... \nPREDCTIONS:")
+    print("Predictia modelului ... \n--- Predictiile ---")
     print(model.predict(X_test))
-    print("REAL SOLUTIONS:")
+    print("--- Adevaratele valori ---")
     print(Y_test)
 
 def saveAndTestNeuralNetworkModel(model,X_train,Y_train,X_test):
@@ -227,7 +227,7 @@ def saveAndTestNeuralNetworkModel(model,X_train,Y_train,X_test):
     print("Se salveaza modelul in fisierul: savedNeuralNetwork")
     model.save("savedNeuralNetwork")
     reconstructed_model = tf.keras.models.load_model("savedNeuralNetwork")
-    print("Se verifica modelul reconstruit.")
+    print("Se verifica egalitatea modelului original cu cel reconstruit.")
     np.testing.assert_allclose(model.predict(X_test), reconstructed_model.predict(X_test))
     print("Modelul reconstruit este deja compilat si a retinut optimizatorul corespunzator. Antrenamentul se va relua:")
     reconstructed_model.fit(X_train, Y_train)
