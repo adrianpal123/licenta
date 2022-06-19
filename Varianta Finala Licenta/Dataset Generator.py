@@ -13,7 +13,7 @@ _MIN_RANK = 2
 _MAX_RANK = 20
 
 # In cazul alegerii metodei de a stoca doar sisteme de acelasi in setul de date: Selectarea rangului unic
-_RANK = 25
+_RANK = 100
 
 # Boolean True: Metoda de a stoca mai multe sisteme de rang diferit in acelasi set de date
 # Boolean False: Metoda de a stoca doar sisteme de acelasi rang in setul de date.
@@ -72,11 +72,11 @@ def generateEntries(x):
     for i in range(x):
         syst, sol = getSystem()
         out = getOutput(syst, sol)
-        with open(getDatasetPath(_MULTI_RANK) + 'SystemSize25(18-Decimal)DatasetFinal.csv', 'a+', newline='',
+        with open(getDatasetPath(_MULTI_RANK) + 'Systsems100.csv', 'a+', newline='',
                   encoding='UTF8') as f:
             writer = csv.writer(f)
             #writer.writerow(['system','solution','output'])
-            if np.max(out) < _MAX and np.min(out) > -_MAX / 3 and np.max(syst) < _MAX and np.min(syst) > 0 and np.max(
+            if np.max(out) < _MAX and np.min(out) > -_MAX and np.max(syst) < _MAX and np.min(syst) > 0 and np.max(
                     sol) < _MAX and np.min(sol) > 0:
                 writer.writerow([str(syst.tobytes()), str(sol.tobytes()), str(out.tobytes())])
                 print(out)
@@ -86,4 +86,4 @@ def generateEntries(x):
 
 # Generarea sistemelor
 if __name__ == '__main__':
-    generateEntries(_GENERATE_SYSTEM_NUMBER)
+    generateEntries(1000000000)

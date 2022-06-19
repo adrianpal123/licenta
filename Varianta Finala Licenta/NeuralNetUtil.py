@@ -13,6 +13,7 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import SGDRegressor
+from sklearn.linear_model import SGDRegressor
 from sklearn.kernel_ridge import KernelRidge
 from sklearn.linear_model import ElasticNet
 from sklearn.linear_model import BayesianRidge
@@ -292,7 +293,7 @@ def testNeuralModelOutputWriteToCsvRealAndPredictedSolutions(testDataset, isItMu
     if predicting:
         f = open('neural network models results/Predicted Solutions ' + fileName, 'w+')
     else:
-        f = open('neural network models results/Real Solutions ' + fileName, 'w+')
+        f = open('neural network models results/Real Solutions ', 'w+')
 
     if isItMultiRank:
         header = ['Solutie 1', 'Solutie 2', 'Solutie 3', 'Solutie 4', 'Solutie 5', '...', 'Solutie n']
@@ -328,7 +329,7 @@ def sklearnOutputResults(regressor, X_test, Y_test, algorithm):
           np.sqrt(metrics.mean_squared_error(Y_test, regressor.predict(X_test))))
 
 
-def sklearnModelsUtil(regressor, X_train, Y_train, X_test, Y_test, algorithm):
+def sklearnModelsUtil(regressor, X_train, Y_train, X_test, Y_test, algorithm, isItMultiRank):
     """
     Metoda suport pentru sklearnNeuralNet, se afiseaza date despre modelele neuronale din libraria SKLearn.
     Se vor afisa predictiile solutiilor si solutiile exacte ale sistemelor de ecuatii.
@@ -344,13 +345,13 @@ def sklearnModelsUtil(regressor, X_train, Y_train, X_test, Y_test, algorithm):
     print(regressor.score(X_train, Y_train))
     print(regressor.coef_)
     print(regressor.intercept_)
-    testNeuralModelOutputWriteToCsvRealAndPredictedSolutions(regressor.predict(X_test), False,
+    testNeuralModelOutputWriteToCsvRealAndPredictedSolutions(regressor.predict(X_test), isItMultiRank,
                                                              "SKLearn " + algorithm + " model", True)
-    testNeuralModelOutputWriteToCsvRealAndPredictedSolutions(Y_test, False, "SKLearn " + algorithm + " model", False)
+    testNeuralModelOutputWriteToCsvRealAndPredictedSolutions(Y_test, isItMultiRank, "SKLearn " + algorithm + " model", False)
     sklearnOutputResults(regressor, X_test, Y_test, algorithm)
 
 
-def sklearnNeuralNet(X_train, Y_train, X_test, Y_test):
+def sklearnNeuralNet(X_train, Y_train, X_test, Y_test, isItMultiRank):
     """
     Aplica diferite modele neuronale din libraria SKLearn - care rezolva regressii pe setul de date.
     @param X_train: Coeficientii dependenti - independenti din setul de date pentru antrenare.
@@ -364,11 +365,11 @@ def sklearnNeuralNet(X_train, Y_train, X_test, Y_test):
 
     # LinearRegression
     regressor = LinearRegression()
-    sklearnModelsUtil(regressor, X_train, Y_train, X_test, Y_test, "LinearRegression")
+    sklearnModelsUtil(regressor, X_train, Y_train, X_test, Y_test, "LinearRegression",isItMultiRank)
 
     # ElasticNet
     regressor = ElasticNet()
-    sklearnModelsUtil(regressor, X_train, Y_train, X_test, Y_test, "ElasticNet")
+    sklearnModelsUtil(regressor, X_train, Y_train, X_test, Y_test, "ElasticNet",isItMultiRank)
 
 
     """
