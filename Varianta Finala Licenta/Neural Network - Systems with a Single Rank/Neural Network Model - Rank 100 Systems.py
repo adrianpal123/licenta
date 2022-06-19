@@ -9,7 +9,7 @@ import NeuralNetUtil as neuralUtil
 IsDataPostiveOnly = False
 mylist = []
 
-for chunk in  pd.read_csv('datasets/SystemSize25(18-Decimal)DatasetFinal.csv', chunksize=1000):
+for chunk in  pd.read_csv('datasets/Systsems100.csv', chunksize=1000):
     mylist.append(chunk)
 
 DATASET = pd.concat(mylist, axis= 0)
@@ -42,16 +42,16 @@ def neuralNetworkModel(dataset, isDataPositiveOnly):
     print("Arhitectura Retelei Neuronale ...")
 
     model = Sequential()
-    initializer = tf.keras.initializers.RandomUniform(minval=-0.3284294, maxval=0.9)
-    model.add(Flatten(input_shape=(25, 26)))
-    model.add(Dense(480, activation=activationFunction, kernel_initializer=initializer,use_bias=True))
+    initializer = tf.keras.initializers.RandomUniform(minval=-0.35, maxval=0.9)
+    model.add(Flatten(input_shape=(100, 101)))
+    model.add(Dense(860, activation=activationFunction, kernel_initializer=initializer,use_bias=True))
+    model.add(Dropout(0.2))
+    model.add(Dense(640, activation="relu"))
     model.add(Dropout(0.2))
     model.add(Dense(320, activation="relu"))
-    model.add(Dropout(0.2))
-    model.add(Dense(160, activation="relu"))
-    model.add(Dropout(0.2))
-    model.add(Dense(25, activation=activationFunction))
-    adam = tf.keras.optimizers.Adam(learning_rate=0.01,beta_1=-0.3284294,beta_2=0.9,epsilon=1e-09,amsgrad=True,name="Adam")
+    model.add(Dropout(0.3))
+    model.add(Dense(100, activation=activationFunction))
+    adam = tf.keras.optimizers.Adam(learning_rate=0.01,beta_1=-0.35,beta_2=0.9,epsilon=1e-09,amsgrad=True,name="Adam")
     model.compile(loss='mse', optimizer=adam, metrics=["accuracy", "mse", "mae"])
     history = model.fit(X_train, Y_train, epochs=100, batch_size=32, verbose='auto', validation_split=0.3,
                         shuffle=True)
@@ -63,7 +63,6 @@ def neuralNetworkModel(dataset, isDataPositiveOnly):
     print(model.summary())
 
     neuralUtil.plot(history)
-    neuralUtil.plottingModelPNG(model)
     neuralUtil.saveAndTestNeuralNetworkModel(model, X_train, Y_train, X_test)
     neuralUtil.testNeuralModelOutputWriteToCsvRealAndPredictedSolutions(Y_test, True,"Keras Neural Model",False)
     neuralUtil.testNeuralModelOutputWriteToCsvRealAndPredictedSolutions(model.predict(X_test), True, "Keras Neural Model",True)

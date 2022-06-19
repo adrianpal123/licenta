@@ -35,7 +35,7 @@ def neuralNetworkModel(dataset):
 
     # Setul de date este normalizat, coeficientii fiind in intervalul [0,1].
     # Se initializeaza greutatile cu valori intre 0.1 si 0.9.
-    initializer = tf.keras.initializers.RandomUniform(minval=0.1, maxval=0.9)
+    initializer = tf.keras.initializers.RandomUniform(minval=0.0001039519, maxval=0.9999998)
 
     # Se aplica conceptul de Flattening discutat si se introduce forma coeficientilor.
     # In cazul de fata, pentru sisteme de rangul 2 vor fi 6 coeficienti.
@@ -69,8 +69,8 @@ def neuralNetworkModel(dataset):
     model.add(Dense(2, activation='relu'))
 
     # In cazul de fata se foloseste optimizatorul Adam inloc de Stocastic gradient descent
-    adam = tf.keras.optimizers.Adam(learning_rate=0.01, beta_1=0.1,
-                                    beta_2=0.9, epsilon=1e-09, amsgrad=True,
+    adam = tf.keras.optimizers.Adam(learning_rate=0.01, beta_1=0.0001039519,
+                                    beta_2=0.9999998, epsilon=1e-09, amsgrad=True,
                                     name="Adam")
 
     # Functia de pierdere.
@@ -96,7 +96,7 @@ def neuralNetworkModel(dataset):
         Y_test, False, "Keras Neural Model", False)
     neuralUtil.testNeuralModelOutputWriteToCsvRealAndPredictedSolutions(
         model.predict(X_test), False,"Keras Neural Model", True)
-    neuralUtil.sklearnNeuralNet(X_train, Y_train, X_test, Y_test)
+    neuralUtil.sklearnNeuralNet(X_train, Y_train, X_test, Y_test,False)
 
 
 if __name__ == '__main__':
