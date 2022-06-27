@@ -1,7 +1,7 @@
 import pandas as pd
 import tensorflow as tf
-from keras.layers import Dense, Flatten, Dropout
 from keras.models import Sequential
+from keras.layers import Dense, Flatten, Dropout
 
 import DatasetUtil as datasetUtil
 import NeuralNetUtil as neuralUtil
@@ -9,7 +9,7 @@ import NeuralNetUtil as neuralUtil
 IsDataPostiveOnly = False
 mylist = []
 
-for chunk in pd.read_csv('datasets/Systsems100.csv', chunksize=1000):
+for chunk in pd.read_csv('Systsems30.csv', chunksize=1000):
     mylist.append(chunk)
 
 DATASET = pd.concat(mylist, axis=0)
@@ -43,17 +43,19 @@ def neuralNetworkModel(dataset, isDataPositiveOnly):
     print("Arhitectura Retelei Neuronale ...")
 
     model = Sequential()
-    initializer = tf.keras.initializers.RandomUniform(minval=-0.35, maxval=0.9)
-    model.add(Flatten(input_shape=(100, 101)))
-    model.add(Dense(10, activation=activationFunction, kernel_initializer=initializer, use_bias=True))
+    initializer = tf.keras.initializers.RandomUniform(minval=-0.57541215, maxval=5.548189e-05)
+    model.add(Flatten(input_shape=(30, 31)))
+    model.add(Dense(480, activation=activationFunction, kernel_initializer=initializer, use_bias=True))
     model.add(Dropout(0.1))
-    model.add(Dense(30, activation="relu"))
+    model.add(Dense(320, activation="relu"))
     model.add(Dropout(0.2))
-    model.add(Dense(100, activation=activationFunction))
-    adam = tf.keras.optimizers.Adam(learning_rate=0.001, beta_1=-0.35, beta_2=0.9, epsilon=1e-09, amsgrad=True,
-                                    name="Adam")
+    model.add(Dense(160, activation="relu"))
+    model.add(Dropout(0.2))
+    model.add(Dense(30, activation=activationFunction))
+    adam = tf.keras.optimizers.Adam(learning_rate=0.001, beta_1=-0.57541215, beta_2=5.548189e-05, epsilon=1e-09,
+                                    amsgrad=True, name="Adam")
     model.compile(loss='mse', optimizer=adam, metrics=["accuracy", "mse", "mae"])
-    history = model.fit(X_train, Y_train, epochs=5, batch_size=32, verbose='auto', validation_split=0.3,
+    history = model.fit(X_train, Y_train, epochs=100, batch_size=16, verbose='auto', validation_split=0.3,
                         shuffle=True)
 
     print(history.history.keys())
@@ -63,12 +65,10 @@ def neuralNetworkModel(dataset, isDataPositiveOnly):
     print(model.summary())
 
     neuralUtil.plot(history)
-    neuralUtil.saveAndTestNeuralNetworkModel(model, X_train, Y_train, X_test)
     neuralUtil.testNeuralModelOutputWriteToCsvRealAndPredictedSolutions(Y_test, True, "Keras Neural Model", False)
     neuralUtil.testNeuralModelOutputWriteToCsvRealAndPredictedSolutions(model.predict(X_test), True,
                                                                         "Keras Neural Model", True)
     neuralUtil.sklearnNeuralNet(X_train, Y_train, X_test, Y_test, True)
-    neuralUtil.timeDifferences(X_test, 100)
 
 
 if __name__ == '__main__':

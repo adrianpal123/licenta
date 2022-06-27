@@ -17,7 +17,6 @@ def neuralNetworkModel(dataset):
     necesare setului de date (pentru a fi compatibile pentru antrenare). Dupa crearea modelului neuronal propriu-zis,
     se vor afisa si reprezentarile grafice corespunzatoare.
     :param dataset: Setul de Date cu valori in ByteCode.
-    :param isDataPositiveOnly: Daca setul de date va avea doar valori positive atunci acest bool = True, altfel False.
     :return: Crearea modelului neuronal, grafice reprezintative (prezentate mai sus).
     """
 
@@ -69,7 +68,7 @@ def neuralNetworkModel(dataset):
     model.add(Dense(2, activation='relu'))
 
     # In cazul de fata se foloseste optimizatorul Adam inloc de Stocastic gradient descent
-    adam = tf.keras.optimizers.Adam(learning_rate=0.01, beta_1=0.0001039519,
+    adam = tf.keras.optimizers.Adam(learning_rate=0.001, beta_1=0.0001039519,
                                     beta_2=0.9999998, epsilon=1e-09, amsgrad=True,
                                     name="Adam")
 
@@ -79,7 +78,7 @@ def neuralNetworkModel(dataset):
 
     # Inceperea procesului de antranare a retelei.
     history = model.fit(X_train, Y_train, epochs=50,
-                        batch_size=128, verbose='auto', validation_split=0.2,
+                        batch_size=128, verbose='auto', validation_split=0.3,
                         shuffle=True)
 
     print(history.history.keys())
@@ -95,8 +94,9 @@ def neuralNetworkModel(dataset):
     neuralUtil.testNeuralModelOutputWriteToCsvRealAndPredictedSolutions(
         Y_test, False, "Keras Neural Model", False)
     neuralUtil.testNeuralModelOutputWriteToCsvRealAndPredictedSolutions(
-        model.predict(X_test), False,"Keras Neural Model", True)
-    neuralUtil.sklearnNeuralNet(X_train, Y_train, X_test, Y_test,False)
+        model.predict(X_test), False, "Keras Neural Model", True)
+    neuralUtil.sklearnNeuralNet(X_train, Y_train, X_test, Y_test, False)
+    neuralUtil.timeDifferences(X_test, 2)
 
 
 if __name__ == '__main__':
